@@ -344,4 +344,80 @@ public static void delete_hostel(int hostel_id) {
         draw_line(79);
     }
     
+    
+    
+    public static void restore_inventory() throws IOException, ClassNotFoundException{
+        File inFile = new File("inventory.dat");
+        FileInputStream infileStream = new FileInputStream(inFile);
+        ObjectInputStream inObjectstream = new ObjectInputStream(infileStream);
+        inventory = (ArrayList)inObjectstream.readObject();
+        
+        inObjectstream.close();
+    }
+    
+    public static void backup_inventory() throws IOException {
+        File outFile = new File("inventory.dat");
+        FileOutputStream outfileStream = new FileOutputStream(outFile);
+        ObjectOutputStream outObjectStream = new ObjectOutputStream(outfileStream);
+        
+        outObjectStream.writeObject(inventory);
+        outObjectStream.close();
+    }
+    
+    public static void add_inventory(int item_id, String item_name, int quantity, String status){
+        Inventory inv = new Inventory(item_id, item_name, quantity, status);
+        
+        inventory.add(inv);
+    }
+    
+    public static void edit_inventory(int item_id, String item_name, int quantity, String status){
+        
+        Inventory inv = null;
+        Boolean found = false;
+        Iterator <Inventory> itr = inventory.iterator();
+        
+        while(itr.hasNext()) {
+            inv = itr.next();
+            if(item_id == inv.getItem_id()) {
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) {
+            inv.setItem_id(item_id);
+            inv.setItem_name(item_name);
+            inv.setQuantity(quantity);
+            inv.setStatus(status);
+        }
+    }
+    
+    public static void delete_inventory(int item_id){
+        Inventory inv = null;
+        Boolean found = false;
+        Iterator <Inventory> itr = inventory.iterator();
+        
+        while(itr.hasNext()){
+            inv = itr.next();
+            if(item_id == inv.getItem_id()){
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) inventory.remove(inv);
+    }
+    
+    public static void list_inventory() {
+        Inventory inv;
+        Iterator <Inventory> itr = inventory.iterator();
+        System.out.printf("\n%2s %10s %15s %20s", "Item ID", "Item Name", "Quantity", "Status");
+        draw_line(79);
+        
+        while(itr.hasNext()){
+            inv = itr.next();
+            System.out.printf("\n%2s %10s %14s %35s", inv.getItem_id(), inv.getItem_name(), inv.getQuantity(), inv.getStatus());
+        }
+        draw_line(79);
+    }
 }
