@@ -110,4 +110,80 @@ public static void delete_hostel(int hostel_id) {
         
     }
     
+    public static void restore_rooms() throws IOException, ClassNotFoundException{
+        File inFile = new File("rooms.dat");
+        FileInputStream infileStream = new FileInputStream(inFile);
+        ObjectInputStream inObjectstream = new ObjectInputStream(infileStream);
+        rooms = (ArrayList)inObjectstream.readObject();
+        
+        inObjectstream.close();
+    }
+    
+    public static void backup_rooms() throws IOException {
+        File outFile = new File("rooms.dat");
+        FileOutputStream outfileStream = new FileOutputStream(outFile);
+        ObjectOutputStream outObjectStream = new ObjectOutputStream(outfileStream);
+        
+        outObjectStream.writeObject(rooms);
+        outObjectStream.close();
+    }
+    
+    public static void add_room(int room_id, int room_number, int hostel_id, String ocupancy_status, String type){
+        Room rm = new Room(room_id, room_number, hostel_id, ocupancy_status, type);
+        
+        rooms.add(rm);
+    }
+    
+    public static void edit_room(int room_id, int room_number, int hostel_id, String ocupancy_status, String type){
+        
+        Room rm = null;
+        Boolean found = false;
+        Iterator <Room> itr = rooms.iterator();
+        
+        while(itr.hasNext()) {
+            rm = itr.next();
+            if(room_id == rm.getRoom_id()) {
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) {
+            rm.setRoom_id(room_id);
+            rm.setRoom_number(room_number);
+            rm.setHostel_id(hostel_id);
+            rm.setOcupancy_status(ocupancy_status);
+            rm.setType(type);
+        }
+    }
+    
+    public static void delete_room(int room_id){
+        Room rm = null;
+        Boolean found = false;
+        Iterator <Room> itr = rooms.iterator();
+        
+        while(itr.hasNext()){
+            rm = itr.next();
+            if(room_id == rm.getRoom_id()){
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) rooms.remove(rm);
+    }
+    
+    public static void list_rooms() {
+        Room rm;
+        Iterator <Room> itr = rooms.iterator();
+        System.out.printf("\n%2s %10s %15s %20s %10s", "Room ID", "Room Number", "Hostel ID", "Ocupancy Status", "Type");
+        draw_line(79);
+        
+        while(itr.hasNext()){
+            rm = itr.next();
+            System.out.printf("\n%2s %10s %14s %35s %10s", rm.getRoom_id(), rm.getRoom_number(), rm.getHostel_id(), rm.getOcupancy_status(), rm.getType());
+        }
+        draw_line(79);
+    }
+    
 }
