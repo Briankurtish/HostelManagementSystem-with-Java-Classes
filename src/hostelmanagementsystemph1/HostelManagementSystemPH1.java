@@ -186,4 +186,86 @@ public static void delete_hostel(int hostel_id) {
         draw_line(79);
     }
     
+    
+    
+    public static void restore_students() throws IOException, ClassNotFoundException{
+        File inFile = new File("students.dat");
+        FileInputStream infileStream = new FileInputStream(inFile);
+        ObjectInputStream inObjectstream = new ObjectInputStream(infileStream);
+        students = (ArrayList)inObjectstream.readObject();
+        
+        inObjectstream.close();
+    }
+    
+    public static void backup_students() throws IOException {
+        File outFile = new File("students.dat");
+        FileOutputStream outfileStream = new FileOutputStream(outFile);
+        ObjectOutputStream outObjectStream = new ObjectOutputStream(outfileStream);
+        
+        outObjectStream.writeObject(students);
+        outObjectStream.close();
+    }
+    
+    public static void add_student(int std_id, String std_name, int contact, String gender, String nationality, int room_id, int hostel_id, String checkinDate, String checkoutDate){
+        Student st = new Student(std_id, std_name, contact, gender, nationality, room_id, hostel_id, checkinDate, checkoutDate);
+        
+        rooms.add(st);
+    }
+    
+    public static void edit_student(int std_id, String std_name, int contact, String gender, String nationality, int room_id, int hostel_id, String checkinDate, String checkoutDate){
+        
+        Student st = null;
+        Boolean found = false;
+        Iterator <Student> itr = students.iterator();
+        
+        while(itr.hasNext()) {
+            st = itr.next();
+            if(std_id == st.getStd_id()) {
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) {
+            st.setStd_id(std_id);
+            st.setStd_name(std_name);
+            st.setContact(contact);
+            st.setGender(gender);
+            st.setNationality(nationality);
+            st.setRoom_id(room_id);
+            st.setHostel_id(hostel_id);
+            st.setCheckinDate(checkinDate);
+            st.setCheckoutDate(checkoutDate);
+        }
+    }
+    
+    public static void delete_student(int std_id){
+        Student st = null;
+        Boolean found = false;
+        Iterator <Student> itr = students.iterator();
+        
+        while(itr.hasNext()){
+            st = itr.next();
+            if(std_id == st.getStd_id()){
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) students.remove(st);
+    }
+    
+    public static void list_students() {
+        Student st;
+        Iterator <Student> itr = students.iterator();
+        System.out.printf("\n%2s %10s %15s %20s %10s %10s %10s %20s %20s", "Std ID", "Std Name", "Contact", "Gender", "Nationality", "Room ID", "Hostel ID", "Check-In-Date", "Check-Out-Date");
+        draw_line(79);
+        
+        while(itr.hasNext()){
+            st = itr.next();
+            System.out.printf("\n%2s %10s %14s %35s %10s %10s %10s %20s %20s", st.getStd_id(), st.getStd_name(), st.getContact(), st.getGender(), st.getNationality(), st.getRoom_id(), st.getHostel_id(), st.getCheckinDate(), st.getCheckoutDate());
+        }
+        draw_line(79);
+    }
+    
 }
