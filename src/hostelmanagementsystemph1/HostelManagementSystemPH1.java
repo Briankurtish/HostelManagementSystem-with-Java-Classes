@@ -499,4 +499,82 @@ public static void delete_hostel(int hostel_id) {
         }
         draw_line(100);
     }
+    
+    
+    public static void restore_maintenance() throws IOException, ClassNotFoundException{
+        File inFile = new File("maintenance.dat");
+        FileInputStream infileStream = new FileInputStream(inFile);
+        ObjectInputStream inObjectstream = new ObjectInputStream(infileStream);
+        maintenance = (ArrayList)inObjectstream.readObject();
+        
+        inObjectstream.close();
+    }
+    
+    public static void backup_maintenance() throws IOException {
+        File outFile = new File("maintenance.dat");
+        FileOutputStream outfileStream = new FileOutputStream(outFile);
+        ObjectOutputStream outObjectStream = new ObjectOutputStream(outfileStream);
+        
+        outObjectStream.writeObject(maintenance);
+        outObjectStream.close();
+    }
+    
+    public static void add_maintenance(int task_id, String description, String staff_id, String priority, String completion_status){
+        Maintenance mnt = new Maintenance(task_id, description, staff_id, priority, completion_status);
+        
+        maintenance.add(mnt);
+    }
+    
+    public static void edit_maintenance(int task_id, String description, String staff_id, String priority, String completion_status){
+        
+        Maintenance mnt = null;
+        Boolean found = false;
+        Iterator <Maintenance> itr = maintenance.iterator();
+        
+        while(itr.hasNext()) {
+            mnt = itr.next();
+            if(task_id == mnt.getTask_id()) {
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) {
+            mnt.setTask_id(task_id);
+            mnt.setDescription(description);
+            mnt.setStaff_id(staff_id);
+            mnt.setPriority(priority);
+            mnt.setCompletion_status(completion_status);
+           
+        }
+    }
+    
+    public static void delete_maintenance(int task_id){
+        Maintenance mnt = null;
+        Boolean found = false;
+        Iterator <Maintenance> itr = maintenance.iterator();
+        
+        while(itr.hasNext()){
+            mnt = itr.next();
+            if(task_id == mnt.getTask_id()){
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) maintenance.remove(mnt);
+    }
+    
+    public static void list_maintenance() {
+        Maintenance mnt;
+        Iterator <Maintenance> itr = maintenance.iterator();
+        System.out.printf("\n%2s %10s 20s %10s %10s", "Task ID", "Description", "Staff ID", "Priority", "Completion Status");
+        draw_line(79);
+        
+        while(itr.hasNext()){
+            mnt = itr.next();
+            System.out.printf("\n%2s %10s 20s %10s %10s", mnt.getTask_id(), mnt.getDescription(), mnt.getStaff_id(), mnt.getPriority(), mnt.getCompletion_status());
+        }
+        draw_line(100);
+    }
 }
