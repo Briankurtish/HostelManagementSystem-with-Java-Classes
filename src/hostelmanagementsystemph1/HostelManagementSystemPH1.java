@@ -420,4 +420,83 @@ public static void delete_hostel(int hostel_id) {
         }
         draw_line(79);
     }
+    
+    
+    public static void restore_visitors() throws IOException, ClassNotFoundException{
+        File inFile = new File("visitors.dat");
+        FileInputStream infileStream = new FileInputStream(inFile);
+        ObjectInputStream inObjectstream = new ObjectInputStream(infileStream);
+        inventory = (ArrayList)inObjectstream.readObject();
+        
+        inObjectstream.close();
+    }
+    
+    public static void backup_visitors() throws IOException {
+        File outFile = new File("visitors.dat");
+        FileOutputStream outfileStream = new FileOutputStream(outFile);
+        ObjectOutputStream outObjectStream = new ObjectOutputStream(outfileStream);
+        
+        outObjectStream.writeObject(visitors);
+        outObjectStream.close();
+    }
+    
+    public static void add_visitor(int visitor_id, String visitor_name, String visit_reason, int hostel_id, int room_id, String start_time, String end_time){
+        Visitor vst = new Visitor(visitor_id, visitor_name, visit_reason, hostel_id, room_id, start_time, end_time);
+        
+        visitors.add(vst);
+    }
+    
+    public static void edit_visitor(int visitor_id, String visitor_name, String visit_reason, int hostel_id, int room_id, String start_time, String end_time){
+        
+        Visitor vst = null;
+        Boolean found = false;
+        Iterator <Visitor> itr = visitors.iterator();
+        
+        while(itr.hasNext()) {
+            vst = itr.next();
+            if(visitor_id == vst.getVisitor_id()) {
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) {
+            vst.setVisitor_id(visitor_id);
+            vst.setVisitor_name(visitor_name);
+            vst.setVisit_reason(visit_reason);
+            vst.setHostel_id(hostel_id);
+            vst.setRoom_id(room_id);
+            vst.setStart_time(start_time);
+            vst.setEnd_time(end_time);
+        }
+    }
+    
+    public static void delete_visitor(int visitor_id){
+        Visitor vst = null;
+        Boolean found = false;
+        Iterator <Visitor> itr = visitors.iterator();
+        
+        while(itr.hasNext()){
+            vst = itr.next();
+            if(visitor_id == vst.getVisitor_id()){
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) visitors.remove(vst);
+    }
+    
+    public static void list_visitors() {
+        Visitor vst;
+        Iterator <Visitor> itr = visitors.iterator();
+        System.out.printf("\n%2s %10s 20s %10s %10s %15s %15s", "Visitor ID", "Visitor Name", "Visit Reason", "Hostel ID", "Room ID", "Start Time", "End Time");
+        draw_line(79);
+        
+        while(itr.hasNext()){
+            vst = itr.next();
+            System.out.printf("\n%2s %10s 20s %10s %10s %15s %15s", vst.getVisitor_id(), vst.getVisitor_name(), vst.getVisit_reason(), vst.getHostel_id(), vst.getRoom_id(), vst.getStart_time(), vst.getEnd_time());
+        }
+        draw_line(100);
+    }
 }
