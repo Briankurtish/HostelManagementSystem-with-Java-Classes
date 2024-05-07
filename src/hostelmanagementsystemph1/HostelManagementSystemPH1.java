@@ -268,4 +268,80 @@ public static void delete_hostel(int hostel_id) {
         draw_line(79);
     }
     
+    
+    public static void restore_staffs() throws IOException, ClassNotFoundException{
+        File inFile = new File("staffs.dat");
+        FileInputStream infileStream = new FileInputStream(inFile);
+        ObjectInputStream inObjectstream = new ObjectInputStream(infileStream);
+        staffs = (ArrayList)inObjectstream.readObject();
+        
+        inObjectstream.close();
+    }
+    
+    public static void backup_staffs() throws IOException {
+        File outFile = new File("staffs.dat");
+        FileOutputStream outfileStream = new FileOutputStream(outFile);
+        ObjectOutputStream outObjectStream = new ObjectOutputStream(outfileStream);
+        
+        outObjectStream.writeObject(staffs);
+        outObjectStream.close();
+    }
+    
+    public static void add_staff(int staff_id, String staff_name, int contact, String role){
+        Staff stf = new Staff(staff_id, staff_name, contact, role);
+        
+        staffs.add(stf);
+    }
+    
+    public static void edit_staff(int staff_id, String staff_name, int contact, String role){
+        
+        Staff stf = null;
+        Boolean found = false;
+        Iterator <Staff> itr = staffs.iterator();
+        
+        while(itr.hasNext()) {
+            stf = itr.next();
+            if(staff_id == stf.getStaff_id()) {
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) {
+            stf.setStaff_id(staff_id);
+            stf.setStaff_name(staff_name);
+            stf.setContact(contact);
+            stf.setRole(role);
+        }
+    }
+    
+    public static void delete_staff(int staff_id){
+        Staff stf = null;
+        Boolean found = false;
+        Iterator <Staff> itr = staffs.iterator();
+        
+        while(itr.hasNext()){
+            stf = itr.next();
+            if(staff_id == stf.getStaff_id()){
+                found = true;
+                break;
+            }
+        }
+        
+        if(found) staffs.remove(stf);
+    }
+    
+    public static void list_staffs() {
+        Staff stf;
+        Iterator <Staff> itr = staffs.iterator();
+        System.out.printf("\n%2s %10s %15s %20s", "Staff ID", "Staff Name", "Contact", "Role");
+        draw_line(79);
+        
+        while(itr.hasNext()){
+            stf = itr.next();
+            System.out.printf("\n%2s %10s %14s %35s", stf.getStaff_id(), stf.getStaff_name(), stf.getContact(), stf.getRole());
+        }
+        draw_line(79);
+    }
+    
 }
